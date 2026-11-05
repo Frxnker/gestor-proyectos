@@ -18,6 +18,12 @@ class Project extends Model
         return ['deadline' => 'date'];
     }
 
+    public const STATUSES = [
+        'pendiente' => 'Pendiente',
+        'en_progreso' => 'En progreso',
+        'completado' => 'Completado',
+    ];
+
     // 1:N — el propietario del proyecto
     public function owner(): BelongsTo
     {
