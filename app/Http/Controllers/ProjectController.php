@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
-// (los imports de Project, StoreProjectRequest y UpdateProjectRequest ya vienen generados)
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -15,7 +15,6 @@ class ProjectController extends Controller
     {
         $user = $request->user();
 
-        // Proyectos que he creado o en los que participo
         $projects = Project::where('user_id', $user->id)
             ->orWhereHas('members', fn ($query) => $query->where('users.id', $user->id))
             ->with('owner')
@@ -39,6 +38,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        Gate::authorize('view', $project);
+
         $project->load(['owner', 'members']);
 
         $availableUsers = User::whereKeyNot($project->user_id)
@@ -51,11 +52,15 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        Gate::authorize('update', $project);
+
         return view('projects.edit', compact('project'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        Gate::authorize('update', $project);
+
         $project->update($request->validated());
 
         return redirect()->route('projects.show', $project)->with('success', 'Proyecto actualizado.');
@@ -63,6 +68,8 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        Gate::authorize('delete', $project);
+
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Proyecto eliminado.');

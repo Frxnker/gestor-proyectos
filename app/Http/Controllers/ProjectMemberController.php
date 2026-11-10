@@ -6,11 +6,14 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectMemberController extends Controller
 {
-    public function store(Request $request, Project $project)
-    {
+    public function store(Request $request, Project $project) {
+
+        Gate::authorize('update', $project);
+        
         $validated = $request->validate([
             'user_id' => [
                 'required',
@@ -30,8 +33,10 @@ class ProjectMemberController extends Controller
         return back()->with('success', 'Participante añadido.');
     }
 
-    public function update(Request $request, Project $project, User $user)
-    {
+    public function update(Request $request, Project $project, User $user) {
+
+        Gate::authorize('update', $project);
+
         $validated = $request->validate([
             'role' => ['required', Rule::in(Project::ROLES)],
             'contribution_hours' => ['required', 'numeric', 'min:0', 'max:9999.99'],
@@ -42,8 +47,10 @@ class ProjectMemberController extends Controller
         return back()->with('success', "Datos de {$user->name} actualizados.");
     }
 
-    public function destroy(Project $project, User $user)
-    {
+    public function destroy(Project $project, User $user) {
+
+        Gate::authorize('update', $project);
+        
         $project->members()->detach($user->id);
 
         return back()->with('success', "{$user->name} ya no participa en el proyecto.");
