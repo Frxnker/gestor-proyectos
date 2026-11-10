@@ -24,6 +24,8 @@ class Project extends Model
         'completado' => 'Completado',
     ];
 
+    public const ROLES = ['Desarrollador', 'Diseñador', 'Tester'];
+
     // 1:N — el propietario del proyecto
     public function owner(): BelongsTo
     {

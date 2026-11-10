@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
@@ -40,7 +41,12 @@ class ProjectController extends Controller
     {
         $project->load(['owner', 'members']);
 
-        return view('projects.show', compact('project'));
+        $availableUsers = User::whereKeyNot($project->user_id)
+            ->whereNotIn('id', $project->members->pluck('id'))
+            ->orderBy('name')
+            ->get();
+
+        return view('projects.show', compact('project', 'availableUsers'));
     }
 
     public function edit(Project $project)

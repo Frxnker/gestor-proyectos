@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $users = User::factory(5)->create()->push($demo);
-        $roles = ['Desarrollador', 'Diseñador', 'Tester'];
+        $roles = Project::ROLES;
 
         Project::factory(8)
             ->state(fn () => ['user_id' => $users->random()->id])
