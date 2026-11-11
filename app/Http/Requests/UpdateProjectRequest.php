@@ -22,4 +22,14 @@ class UpdateProjectRequest extends FormRequest
             'status' => ['required', Rule::in(array_keys(Project::STATUSES))],
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'title' => 'título',
+            'description' => 'descripción',
+            'deadline' => 'fecha límite',
+            'status' => 'estado',
+        ];
+    }
 }

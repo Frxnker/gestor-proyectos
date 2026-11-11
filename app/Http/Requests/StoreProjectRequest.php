@@ -10,7 +10,7 @@ class StoreProjectRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // la ruta ya exige login
+        return true;
     }
 
     public function rules(): array
@@ -20,6 +20,16 @@ class StoreProjectRequest extends FormRequest
             'description' => ['required', 'string'],
             'deadline' => ['required', 'date', 'after_or_equal:today'],
             'status' => ['required', Rule::in(array_keys(Project::STATUSES))],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'title' => 'título',
+            'description' => 'descripción',
+            'deadline' => 'fecha límite',
+            'status' => 'estado',
         ];
     }
 }
